@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:16
+    container_name: postgres
+    command: -p 1222
+    expose:
+      - 1221
+    env_file:
+      - .env
+
+
+  app:
+    build:
+      context: .
+    env_file:
+      - .env
+    container_name: fastapi_app
+    command: ["src/app.sh"]
+    ports:
+      - 1908:8000
+    depends_on:
+      - db
