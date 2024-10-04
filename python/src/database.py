@@ -1,4 +1,4 @@
-from sqlalchemy import  create_engine, delete
+from sqlalchemy import  create_engine, delete, select
 from sqlalchemy.orm import sessionmaker
 from models import Students
 from config import settings
@@ -27,10 +27,17 @@ def selet_all_student():
 
                 
 def delete_student(std_id:int):
+    
     with ses() as sess:
-        std_id = int(std_id)
-        sess.execute(delete(Students).where(Students.id == std_id))
-        return True
+        try:
+            std_id = int(std_id)
+            stud = sess.query(Students).filter(Students.id == std_id)
+            stud.delete(synchronize_session=False)
+            sess.commit()
+            return True
+        except Exception as ex:
+            print(ex)
+        
         
         
 def update_stud(std_id, name, second_name, date_bd, course):
